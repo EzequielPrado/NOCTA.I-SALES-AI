@@ -943,7 +943,7 @@ function App() {
                   <span>WhatsApp</span>
                 </a>
                 <a 
-                  href="https://instagram.com/noctai" 
+                  href="https://instagram.com/noct.ai" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 text-gray-300 hover:text-pink-400 transition-colors"
