@@ -17,6 +17,9 @@ interface FormData {
   revenue: string;
 }
 
+alert('🔥 handleSubmit foi chamado!');
+console.log('🔥 handleSubmit foi chamado!');
+
 function App() {
   const [formData, setFormData] = useState<FormData>({
     name: '',
@@ -569,6 +572,7 @@ function App() {
         </section>
 
         {/* Strategic Form Section */}
+        
 <section id="formulario" className="py-20 bg-[#04020a] px-4">
   <div className="max-w-4xl mx-auto">
     <div className="bg-gradient-to-br from-[#1d1d1d]/80 to-[#04020a]/50 border border-[#6831f3]/20 rounded-2xl p-8 backdrop-blur-sm">
@@ -669,6 +673,7 @@ function App() {
               />
             </div>
           </div>
+        
 
           {/* Faixa de faturamento */}
           <div>
