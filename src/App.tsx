@@ -814,7 +814,7 @@ function App() {
       </div>
     </section>
   );
-};
+
 
 export default ContactForm;
 
