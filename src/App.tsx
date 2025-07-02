@@ -1,55 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import {
-  ArrowRight,
-  CheckCircle,
-  Users,
-  Clock,
-  TrendingUp,
-  RefreshCw,
-  Puzzle,
-  TrendingDown,
-  Calendar,
-  Mail,
-  AlertCircle,
-  Zap,
-  DollarSign,
-  BarChart3,
-  Headphones,
-  Repeat,
-  Target,
-  Building2,
-  CreditCard,
-  Gift,
-  LineChart,
-  Briefcase,
-  ShoppingCart,
-  Cpu,
-  Database,
-  MessageSquare,
-  FileText,
-  Settings,
-  CheckCircle2,
-  Phone,
-  Linkedin,
-  ChevronDown,
-  Menu,
-  X,
-  Star,
-  Quote,
-  MessageCircle,
-  Instagram,
-  Plus,
-  Minus,
-  Heart,
-  Home,
-  Stethoscope,
-  UserCheck,
-  BookOpen,
-  Store
+  ArrowRight, CheckCircle, Users, Clock, TrendingUp, RefreshCw, Puzzle, TrendingDown, Calendar,
+  Mail, AlertCircle, Zap, DollarSign, BarChart3, Headphones, Repeat, Target, Building2, CreditCard,
+  Gift, LineChart, Briefcase, ShoppingCart, Cpu, Database, MessageSquare, FileText, Settings,
+  CheckCircle2, Phone, Linkedin, ChevronDown, Menu, X, Star, Quote, MessageCircle, Instagram,
+  Plus, Minus, Heart, Home, Stethoscope, UserCheck, BookOpen, Store
 } from 'lucide-react';
 
-
-// 1️⃣ ADICIONE A INTERFACE (logo após os imports)
 interface FormData {
   name: string;
   whatsapp: string;
@@ -61,8 +18,6 @@ interface FormData {
 }
 
 function App() {
-  // 2️⃣ ADICIONE OS STATES (no início do componente)
-  const [isFormSubmitted, setIsFormSubmitted] = useState<boolean>(false);
   const [formData, setFormData] = useState<FormData>({
     name: '',
     whatsapp: '',
@@ -73,31 +28,65 @@ function App() {
     revenue: ''
   });
 
-  // 3️⃣ ADICIONE AS FUNÇÕES (após os states)
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [visibleSteps, setVisibleSteps] = useState<number[]>([]);
+  const [openFAQ, setOpenFAQ] = useState<number | null>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    document.documentElement.style.scrollBehavior = 'smooth';
+    const setVH = () => {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    };
+    setVH();
+    window.addEventListener('resize', setVH);
+    const timer = setTimeout(() => setIsVisible(true), 500);
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const stepIndex = parseInt(entry.target.getAttribute('data-step') || '0');
+            setVisibleSteps((prev) => [...prev, stepIndex]);
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
+    const steps = document.querySelectorAll('[data-step]');
+    steps.forEach((step) => observer.observe(step));
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', setVH);
+      clearTimeout(timer);
+    };
+  }, []);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
-    // ⚠️ TROQUE PELA SUA URL DE WEBHOOK
+
     const WEBHOOK_URL = 'https://manuela.noctai.com.br/webhook/3896c693-2116-46b3-a3a7-279bbf9b70d6';
-    
-    const submitButton = e.target.querySelector('button[type="submit"]') as HTMLButtonElement;
+    const submitButton = e.currentTarget.querySelector('button[type="submit"]') as HTMLButtonElement;
     const originalText = submitButton.innerHTML;
     submitButton.innerHTML = '⏳ Enviando...';
     submitButton.disabled = true;
-    
+
     try {
       const response = await fetch(WEBHOOK_URL, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           nome: formData.name,
@@ -118,98 +107,18 @@ function App() {
       } else {
         throw new Error(`Erro HTTP: ${response.status}`);
       }
-
     } catch (error) {
       console.error('Erro ao enviar formulário:', error);
       alert('❌ Ops! Houve um erro ao enviar o formulário. Tente novamente.');
-      
     } finally {
       submitButton.innerHTML = originalText;
       submitButton.disabled = false;
     }
   };
-function App() {
-  const [formData, setFormData] = useState({
-    name: '',
-    whatsapp: '',
-    company: '',
-    website: '',
-    revenue: ''
-  });
 
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
-  const [visibleSteps, setVisibleSteps] = useState<number[]>([]);
-  const [openFAQ, setOpenFAQ] = useState<number | null>(null);
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    // Smooth scroll behavior
-    document.documentElement.style.scrollBehavior = 'smooth';
-    
-    // Set viewport height for mobile
-    const setVH = () => {
-      const vh = window.innerHeight * 0.01;
-      document.documentElement.style.setProperty('--vh', `${vh}px`);
-    };
-    
-    setVH();
-    window.addEventListener('resize', setVH);
-    
-    // Badge animation
-    const timer = setTimeout(() => setIsVisible(true), 500);
-    
-    // Intersection Observer for framework steps animation
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const stepIndex = parseInt(entry.target.getAttribute('data-step') || '0');
-            setVisibleSteps(prev => [...prev, stepIndex]);
-          }
-        });
-      },
-      { threshold: 0.3 }
-    );
-
-    // Observe framework steps
-    const steps = document.querySelectorAll('[data-step]');
-    steps.forEach(step => observer.observe(step));
-
-    return () => {
-      observer.disconnect();
-      window.removeEventListener('resize', setVH);
-      clearTimeout(timer);
-    };
-  }, []);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('Form submitted:', formData);
-    setIsFormSubmitted(true);
-    setTimeout(() => setIsFormSubmitted(false), 5000);
-  };
-
-  const scrollToForm = () => {
-    document.getElementById('formulario')?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const toggleFAQ = (index: number) => {
-    setOpenFAQ(openFAQ === index ? null : index);
-  };
-
+  const scrollToForm = () => document.getElementById('formulario')?.scrollIntoView({ behavior: 'smooth' });
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+  const toggleFAQ = (index: number) => setOpenFAQ(openFAQ === index ? null : index);
   return (
     <div className="min-h-screen bg-[#04020a] text-white relative overflow-hidden flex flex-col">
       {/* Background Grid Pattern */}
@@ -1077,5 +986,4 @@ function App() {
     </div>
   );
 }
-
-
+export default App;
