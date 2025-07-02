@@ -594,7 +594,7 @@ function App() {
           </p>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4 bg-[#1d1d1d] p-6 rounded-xl border border-[#6831f3]/30">
           {/* Nome / WhatsApp */}
           <div className="grid md:grid-cols-2 gap-6">
             <div>
