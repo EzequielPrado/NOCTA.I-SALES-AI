@@ -48,9 +48,8 @@ import {
   Store
 } from 'lucide-react';
 
-import React, { useState } from 'react';
-import { ArrowRight, CheckCircle } from 'lucide-react';
 
+// 1️⃣ ADICIONE A INTERFACE (logo após os imports)
 interface FormData {
   name: string;
   whatsapp: string;
@@ -61,7 +60,9 @@ interface FormData {
   revenue: string;
 }
 
-const ContactForm: React.FC = () => {
+function App() {
+  // 2️⃣ ADICIONE OS STATES (no início do componente)
+  const [isFormSubmitted, setIsFormSubmitted] = useState<boolean>(false);
   const [formData, setFormData] = useState<FormData>({
     name: '',
     whatsapp: '',
@@ -72,10 +73,8 @@ const ContactForm: React.FC = () => {
     revenue: ''
   });
 
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [isFormSubmitted, setIsFormSubmitted] = useState<boolean>(false);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>): void => {
+  // 3️⃣ ADICIONE AS FUNÇÕES (após os states)
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -83,55 +82,52 @@ const ContactForm: React.FC = () => {
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsSubmitting(true);
-
+    
+    // ⚠️ TROQUE PELA SUA URL DE WEBHOOK
+    const WEBHOOK_URL = 'https://manuela.noctai.com.br/webhook/3896c693-2116-46b3-a3a7-279bbf9b70d6';
+    
+    const submitButton = e.target.querySelector('button[type="submit"]') as HTMLButtonElement;
+    const originalText = submitButton.innerHTML;
+    submitButton.innerHTML = '⏳ Enviando...';
+    submitButton.disabled = true;
+    
     try {
-      const webhookUrl = 'https://manuela.noctai.com.br/webhook-test/3896c693-2116-46b3-a3a7-279bbf9b70d6';
-      
-      const payload = {
-        name: formData.name,
-        whatsapp: formData.whatsapp,
-        email: formData.email,
-        company: formData.company,
-        segment: formData.segment,
-        website: formData.website || null,
-        revenue: formData.revenue || null,
-        timestamp: new Date().toISOString(),
-        source: 'contact_form'
-      };
-
-      const response = await fetch(webhookUrl, {
+      const response = await fetch(WEBHOOK_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify({
+          nome: formData.name,
+          whatsapp: formData.whatsapp,
+          email: formData.email,
+          empresa: formData.company,
+          segmento: formData.segment,
+          website: formData.website,
+          faturamento: formData.revenue,
+          timestamp: new Date().toISOString(),
+          origem: 'landing-page-diagnostico'
+        })
       });
 
       if (response.ok) {
         setIsFormSubmitted(true);
-        setFormData({
-          name: '',
-          whatsapp: '',
-          email: '',
-          company: '',
-          segment: '',
-          website: '',
-          revenue: ''
-        });
+        console.log('Formulário enviado com sucesso!');
       } else {
         throw new Error(`Erro HTTP: ${response.status}`);
       }
+
     } catch (error) {
       console.error('Erro ao enviar formulário:', error);
-      alert('Erro ao enviar formulário. Tente novamente.');
+      alert('❌ Ops! Houve um erro ao enviar o formulário. Tente novamente.');
+      
     } finally {
-      setIsSubmitting(false);
+      submitButton.innerHTML = originalText;
+      submitButton.disabled = false;
     }
   };
-
 function App() {
   const [formData, setFormData] = useState({
     name: '',
@@ -663,160 +659,139 @@ function App() {
           </div>
         </section>
 
- return (
-    <section id="formulario" className="py-20 bg-[#04020a] px-4">
-      <div className="max-w-4xl mx-auto">
-        <div className="bg-gradient-to-br from-[#1d1d1d]/80 to-[#04020a]/50 border border-[#6831f3]/20 rounded-2xl p-8 backdrop-blur-sm">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl lg:text-3xl font-black mb-4">
-              Quer ver o que sua empresa <span className="text-[#6831f3]">pode automatizar</span>?
-            </h2>
-            <p className="text-gray-300">
-              Responda algumas perguntas e receba um diagnóstico real com soluções aplicáveis.
-            </p>
+        {/* Strategic Form Section */}
+<section id="formulario" className="py-20 bg-[#04020a] px-4">
+  <div className="max-w-4xl mx-auto">
+    <div className="bg-gradient-to-br from-[#1d1d1d]/80 to-[#04020a]/50 border border-[#6831f3]/20 rounded-2xl p-8 backdrop-blur-sm">
+      <div className="text-center mb-8">
+        <h2 className="text-2xl lg:text-3xl font-black mb-4">
+          Quer ver o que sua empresa <span className="text-[#6831f3]">pode automatizar</span>?
+        </h2>
+        <p className="text-gray-300">
+          Responda algumas perguntas e receba um diagnóstico real com soluções aplicáveis.
+        </p>
+      </div>
+
+      {isFormSubmitted ? (
+        <div className="text-center py-12">
+          <CheckCircle className="w-16 h-16 text-green-400 mx-auto mb-4" />
+          <h3 className="text-2xl font-bold text-green-400 mb-2">✅ Sucesso!</h3>
+          <p className="text-gray-300">
+            🕑 Em alguns segundos você vai receber uma mensagem no WhatsApp com os próximos passos do seu diagnóstico.
+          </p>
+        </div>
+      ) : (
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Nome / WhatsApp */}
+          <div className="grid md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-semibold text-gray-300 mb-2">Qual o seu nome? *</label>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                className="w-full bg-[#04020a] border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-[#6831f3] focus:ring-2 focus:ring-[#6831f3]/20 transition-all"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-gray-300 mb-2">Qual o seu WhatsApp? *</label>
+              <input
+                type="tel"
+                name="whatsapp"
+                value={formData.whatsapp}
+                onChange={handleInputChange}
+                className="w-full bg-[#04020a] border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-[#6831f3] focus:ring-2 focus:ring-[#6831f3]/20 transition-all"
+                placeholder="(11) 99999-9999"
+                required
+              />
+            </div>
           </div>
 
-          {isFormSubmitted ? (
-            <div className="text-center py-12">
-              <CheckCircle className="w-16 h-16 text-green-400 mx-auto mb-4" />
-              <h3 className="text-2xl font-bold text-green-400 mb-2">✅ Sucesso!</h3>
-              <p className="text-gray-300">
-                🕑 Em alguns segundos você vai receber uma mensagem no WhatsApp com os próximos passos do seu diagnóstico.
-              </p>
+          {/* E-mail / Empresa */}
+          <div className="grid md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-semibold text-gray-300 mb-2">Qual o seu melhor e-mail? *</label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                className="w-full bg-[#04020a] border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-[#6831f3] focus:ring-2 focus:ring-[#6831f3]/20 transition-all"
+                required
+              />
             </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Nome / WhatsApp */}
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-300 mb-2">Qual o seu nome? *</label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    className="w-full bg-[#04020a] border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-[#6831f3] focus:ring-2 focus:ring-[#6831f3]/20 transition-all"
-                    required
-                    disabled={isSubmitting}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-gray-300 mb-2">Qual o seu WhatsApp? *</label>
-                  <input
-                    type="tel"
-                    name="whatsapp"
-                    value={formData.whatsapp}
-                    onChange={handleInputChange}
-                    className="w-full bg-[#04020a] border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-[#6831f3] focus:ring-2 focus:ring-[#6831f3]/20 transition-all"
-                    placeholder="(11) 99999-9999"
-                    required
-                    disabled={isSubmitting}
-                  />
-                </div>
-              </div>
+            <div>
+              <label className="block text-sm font-semibold text-gray-300 mb-2">Qual o nome da sua empresa *</label>
+              <input
+                type="text"
+                name="company"
+                value={formData.company}
+                onChange={handleInputChange}
+                className="w-full bg-[#04020a] border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-[#6831f3] focus:ring-2 focus:ring-[#6831f3]/20 transition-all"
+                required
+              />
+            </div>
+          </div>
 
-              {/* E-mail / Empresa */}
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-300 mb-2">Qual o seu melhor e-mail? *</label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    className="w-full bg-[#04020a] border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-[#6831f3] focus:ring-2 focus:ring-[#6831f3]/20 transition-all"
-                    required
-                    disabled={isSubmitting}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-gray-300 mb-2">Qual o nome da sua empresa *</label>
-                  <input
-                    type="text"
-                    name="company"
-                    value={formData.company}
-                    onChange={handleInputChange}
-                    className="w-full bg-[#04020a] border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-[#6831f3] focus:ring-2 focus:ring-[#6831f3]/20 transition-all"
-                    required
-                    disabled={isSubmitting}
-                  />
-                </div>
-              </div>
+          {/* Segmento / Site */}
+          <div className="grid md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-semibold text-gray-300 mb-2">Qual o segmento? *</label>
+              <input
+                type="text"
+                name="segment"
+                value={formData.segment}
+                onChange={handleInputChange}
+                className="w-full bg-[#04020a] border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-[#6831f3] focus:ring-2 focus:ring-[#6831f3]/20 transition-all"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-gray-300 mb-2">Link do site ou Instagram</label>
+              <input
+                type="text"
+                name="website"
+                value={formData.website}
+                onChange={handleInputChange}
+                className="w-full bg-[#04020a] border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-[#6831f3] focus:ring-2 focus:ring-[#6831f3]/20 transition-all"
+                placeholder="https://..."
+              />
+            </div>
+          </div>
 
-              {/* Segmento / Site */}
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-300 mb-2">Qual o segmento? *</label>
-                  <input
-                    type="text"
-                    name="segment"
-                    value={formData.segment}
-                    onChange={handleInputChange}
-                    className="w-full bg-[#04020a] border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-[#6831f3] focus:ring-2 focus:ring-[#6831f3]/20 transition-all"
-                    required
-                    disabled={isSubmitting}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-gray-300 mb-2">Link do site ou Instagram</label>
-                  <input
-                    type="text"
-                    name="website"
-                    value={formData.website}
-                    onChange={handleInputChange}
-                    className="w-full bg-[#04020a] border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-[#6831f3] focus:ring-2 focus:ring-[#6831f3]/20 transition-all"
-                    placeholder="https://..."
-                    disabled={isSubmitting}
-                  />
-                </div>
-              </div>
+          {/* Faixa de faturamento */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-300 mb-2">Faixa de faturamento mensal</label>
+            <select
+              name="revenue"
+              value={formData.revenue}
+              onChange={handleInputChange}
+              className="w-full bg-[#04020a] border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-[#6831f3] focus:ring-2 focus:ring-[#6831f3]/20 transition-all"
+            >
+              <option value="">Selecione uma opção</option>
+              <option value="0-30k">R$ 0 - R$30.000</option>
+              <option value="30-50k">R$30.000 - R$50.000</option>
+              <option value="50-100k">R$50.000 - R$100.000</option>
+              <option value="100-500k">R$100.000 - R$300.000</option>
+              <option value="500k+">R$500.000 +</option>
+            </select>
+          </div>
 
-              {/* Faixa de faturamento */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-300 mb-2">Faixa de faturamento mensal</label>
-                <select
-                  name="revenue"
-                  value={formData.revenue}
-                  onChange={handleInputChange}
-                  className="w-full bg-[#04020a] border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-[#6831f3] focus:ring-2 focus:ring-[#6831f3]/20 transition-all"
-                  disabled={isSubmitting}
-                >
-                  <option value="">Selecione uma opção</option>
-                  <option value="0-30k">R$ 0 - R$30.000</option>
-                  <option value="30-50k">R$30.000 - R$50.000</option>
-                  <option value="50-100k">R$50.000 - R$100.000</option>
-                  <option value="100-500k">R$100.000 - R$300.000</option>
-                  <option value="500k+">R$500.000 +</option>
-                </select>
-              </div>
-
-              {/* Botão de envio */}
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full bg-gradient-to-r from-[#6831f3] to-purple-600 hover:from-purple-600 hover:to-[#6831f3] px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300 transform hover:scale-105 shadow-2xl hover:shadow-purple-500/25 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-              >
-                {isSubmitting ? (
-                  <>
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                    <span>Enviando...</span>
-                  </>
-                ) : (
-                  <>
-                    <span>🚀 Enviar e Agendar Diagnóstico</span>
-                    <ArrowRight className="w-5 h-5" />
-                  </>
-                )}
-              </button>
-            </form>
-          )}
-        </div>
-      </div>
-    </section>
-  );
-
-
-export default ContactForm;
+          {/* Botão de envio */}
+          <button
+            type="submit"
+            className="w-full bg-gradient-to-r from-[#6831f3] to-purple-600 hover:from-purple-600 hover:to-[#6831f3] px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300 transform hover:scale-105 shadow-2xl hover:shadow-purple-500/25 flex items-center justify-center gap-3"
+          >
+            <span>🚀 Enviar e Agendar Diagnóstico</span>
+            <ArrowRight className="w-5 h-5" />
+          </button>
+        </form>
+      )}
+    </div>
+  </div>
+</section>
 
 
 {/* Framework Section */}
