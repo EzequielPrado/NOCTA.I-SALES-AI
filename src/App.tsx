@@ -76,7 +76,7 @@ function App() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const WEBHOOK_URL = 'https://manuela.noctai.com.br/webhook-test/d2c684cf-89a7-40ea-8a53-42177106ba2d';
+    const WEBHOOK_URL = 'https://webhook.site/028a3519-ec15-462e-b556-fe8f369a0791';
     const submitButton = e.currentTarget.querySelector('button[type="submit"]') as HTMLButtonElement;
     const originalText = submitButton.innerHTML;
     submitButton.innerHTML = '⏳ Enviando...';
