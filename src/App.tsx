@@ -48,6 +48,90 @@ import {
   Store
 } from 'lucide-react';
 
+import React, { useState } from 'react';
+import { ArrowRight, CheckCircle } from 'lucide-react';
+
+interface FormData {
+  name: string;
+  whatsapp: string;
+  email: string;
+  company: string;
+  segment: string;
+  website: string;
+  revenue: string;
+}
+
+const ContactForm: React.FC = () => {
+  const [formData, setFormData] = useState<FormData>({
+    name: '',
+    whatsapp: '',
+    email: '',
+    company: '',
+    segment: '',
+    website: '',
+    revenue: ''
+  });
+
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [isFormSubmitted, setIsFormSubmitted] = useState<boolean>(false);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>): void => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      const webhookUrl = 'https://manuela.noctai.com.br/webhook-test/3896c693-2116-46b3-a3a7-279bbf9b70d6';
+      
+      const payload = {
+        name: formData.name,
+        whatsapp: formData.whatsapp,
+        email: formData.email,
+        company: formData.company,
+        segment: formData.segment,
+        website: formData.website || null,
+        revenue: formData.revenue || null,
+        timestamp: new Date().toISOString(),
+        source: 'contact_form'
+      };
+
+      const response = await fetch(webhookUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (response.ok) {
+        setIsFormSubmitted(true);
+        setFormData({
+          name: '',
+          whatsapp: '',
+          email: '',
+          company: '',
+          segment: '',
+          website: '',
+          revenue: ''
+        });
+      } else {
+        throw new Error(`Erro HTTP: ${response.status}`);
+      }
+    } catch (error) {
+      console.error('Erro ao enviar formulário:', error);
+      alert('Erro ao enviar formulário. Tente novamente.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
 function App() {
   const [formData, setFormData] = useState({
     name: '',
@@ -579,95 +663,7 @@ function App() {
           </div>
         </section>
 
-disabled={isSubmitting}import React, { useState } from 'react';
-import { ArrowRight, CheckCircle } from 'lucide-react';
-
-interface FormData {
-  name: string;
-  whatsapp: string;
-  email: string;
-  company: string;
-  segment: string;
-  website: string;
-  revenue: string;
-}
-
-const ContactForm: React.FC = () => {
-  const [formData, setFormData] = useState<FormData>({
-    name: '',
-    whatsapp: '',
-    email: '',
-    company: '',
-    segment: '',
-    website: '',
-    revenue: ''
-  });
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
-    try {
-      // URL do webhook baseada na sua configuração
-      const webhookUrl = 'https://manuela.noctai.com.br/webhook-test/3896c693-2116-46b3-a3a7-279bbf9b70d6';
-      
-      // Preparar os dados para envio
-      const payload = {
-        name: formData.name,
-        whatsapp: formData.whatsapp,
-        email: formData.email,
-        company: formData.company,
-        segment: formData.segment,
-        website: formData.website || null,
-        revenue: formData.revenue || null,
-        timestamp: new Date().toISOString(),
-        source: 'contact_form'
-      };
-
-      // Enviar dados via POST para o webhook
-      const response = await fetch(webhookUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload)
-      });
-
-      if (response.ok) {
-        setIsFormSubmitted(true);
-        // Limpar formulário após sucesso
-        setFormData({
-          name: '',
-          whatsapp: '',
-          email: '',
-          company: '',
-          segment: '',
-          website: '',
-          revenue: ''
-        });
-      } else {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-    } catch (error) {
-      console.error('Erro ao enviar formulário:', error);
-      alert('Erro ao enviar formulário. Tente novamente.');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  return (
+ return (
     <section id="formulario" className="py-20 bg-[#04020a] px-4">
       <div className="max-w-4xl mx-auto">
         <div className="bg-gradient-to-br from-[#1d1d1d]/80 to-[#04020a]/50 border border-[#6831f3]/20 rounded-2xl p-8 backdrop-blur-sm">
@@ -690,109 +686,109 @@ const ContactForm: React.FC = () => {
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Nome / WhatsApp */}
-        <div className="grid md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-sm font-semibold text-gray-300 mb-2">Qual o seu nome? *</label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleInputChange}
-              className="w-full bg-[#04020a] border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-[#6831f3] focus:ring-2 focus:ring-[#6831f3]/20 transition-all"
-              required
+              {/* Nome / WhatsApp */}
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-300 mb-2">Qual o seu nome? *</label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    className="w-full bg-[#04020a] border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-[#6831f3] focus:ring-2 focus:ring-[#6831f3]/20 transition-all"
+                    required
+                    disabled={isSubmitting}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-300 mb-2">Qual o seu WhatsApp? *</label>
+                  <input
+                    type="tel"
+                    name="whatsapp"
+                    value={formData.whatsapp}
+                    onChange={handleInputChange}
+                    className="w-full bg-[#04020a] border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-[#6831f3] focus:ring-2 focus:ring-[#6831f3]/20 transition-all"
+                    placeholder="(11) 99999-9999"
+                    required
+                    disabled={isSubmitting}
+                  />
+                </div>
+              </div>
 
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-semibold text-gray-300 mb-2">Qual o seu WhatsApp? *</label>
-            <input
-              type="tel"
-              name="whatsapp"
-              value={formData.whatsapp}
-              onChange={handleInputChange}
-              className="w-full bg-[#04020a] border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-[#6831f3] focus:ring-2 focus:ring-[#6831f3]/20 transition-all"
-              placeholder="(11) 99999-9999"
-              required
-              disabled={isSubmitting}
-            />
-          </div>
-        </div>
+              {/* E-mail / Empresa */}
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-300 mb-2">Qual o seu melhor e-mail? *</label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    className="w-full bg-[#04020a] border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-[#6831f3] focus:ring-2 focus:ring-[#6831f3]/20 transition-all"
+                    required
+                    disabled={isSubmitting}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-300 mb-2">Qual o nome da sua empresa *</label>
+                  <input
+                    type="text"
+                    name="company"
+                    value={formData.company}
+                    onChange={handleInputChange}
+                    className="w-full bg-[#04020a] border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-[#6831f3] focus:ring-2 focus:ring-[#6831f3]/20 transition-all"
+                    required
+                    disabled={isSubmitting}
+                  />
+                </div>
+              </div>
 
-        {/* E-mail / Empresa */}
-        <div className="grid md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-sm font-semibold text-gray-300 mb-2">Qual o seu melhor e-mail? *</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleInputChange}
-              className="w-full bg-[#04020a] border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-[#6831f3] focus:ring-2 focus:ring-[#6831f3]/20 transition-all"
-              required
-              disabled={isSubmitting}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-semibold text-gray-300 mb-2">Qual o nome da sua empresa *</label>
-            <input
-              type="text"
-              name="company"
-              value={formData.company}
-              onChange={handleInputChange}
-              className="w-full bg-[#04020a] border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-[#6831f3] focus:ring-2 focus:ring-[#6831f3]/20 transition-all"
-              required
-              disabled={isSubmitting}
-            />
-          </div>
-        </div>
+              {/* Segmento / Site */}
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-300 mb-2">Qual o segmento? *</label>
+                  <input
+                    type="text"
+                    name="segment"
+                    value={formData.segment}
+                    onChange={handleInputChange}
+                    className="w-full bg-[#04020a] border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-[#6831f3] focus:ring-2 focus:ring-[#6831f3]/20 transition-all"
+                    required
+                    disabled={isSubmitting}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-300 mb-2">Link do site ou Instagram</label>
+                  <input
+                    type="text"
+                    name="website"
+                    value={formData.website}
+                    onChange={handleInputChange}
+                    className="w-full bg-[#04020a] border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-[#6831f3] focus:ring-2 focus:ring-[#6831f3]/20 transition-all"
+                    placeholder="https://..."
+                    disabled={isSubmitting}
+                  />
+                </div>
+              </div>
 
-        {/* Segmento / Site */}
-        <div className="grid md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-sm font-semibold text-gray-300 mb-2">Qual o segmento? *</label>
-            <input
-              type="text"
-              name="segment"
-              value={formData.segment}
-              onChange={handleInputChange}
-              className="w-full bg-[#04020a] border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-[#6831f3] focus:ring-2 focus:ring-[#6831f3]/20 transition-all"
-              required
-              disabled={isSubmitting}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-semibold text-gray-300 mb-2">Link do site ou Instagram</label>
-            <input
-              type="text"
-              name="website"
-              value={formData.website}
-              onChange={handleInputChange}
-              className="w-full bg-[#04020a] border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-[#6831f3] focus:ring-2 focus:ring-[#6831f3]/20 transition-all"
-              placeholder="https://..."
-              disabled={isSubmitting}
-            />
-          </div>
-        </div>
-
-        {/* Faixa de faturamento */}
-        <div>
-          <label className="block text-sm font-semibold text-gray-300 mb-2">Faixa de faturamento mensal</label>
-          <select
-            name="revenue"
-            value={formData.revenue}
-            onChange={handleInputChange}
-            className="w-full bg-[#04020a] border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-[#6831f3] focus:ring-2 focus:ring-[#6831f3]/20 transition-all"
-            disabled={isSubmitting}
-          >
-            <option value="">Selecione uma opção</option>
-            <option value="0-30k">R$ 0 - R$30.000</option>
-            <option value="30-50k">R$30.000 - R$50.000</option>
-            <option value="50-100k">R$50.000 - R$100.000</option>
-            <option value="100-500k">R$100.000 - R$300.000</option>
-            <option value="500k+">R$500.000 +</option>
-          </select>
-        </div>
+              {/* Faixa de faturamento */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-300 mb-2">Faixa de faturamento mensal</label>
+                <select
+                  name="revenue"
+                  value={formData.revenue}
+                  onChange={handleInputChange}
+                  className="w-full bg-[#04020a] border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-[#6831f3] focus:ring-2 focus:ring-[#6831f3]/20 transition-all"
+                  disabled={isSubmitting}
+                >
+                  <option value="">Selecione uma opção</option>
+                  <option value="0-30k">R$ 0 - R$30.000</option>
+                  <option value="30-50k">R$30.000 - R$50.000</option>
+                  <option value="50-100k">R$50.000 - R$100.000</option>
+                  <option value="100-500k">R$100.000 - R$300.000</option>
+                  <option value="500k+">R$500.000 +</option>
+                </select>
+              </div>
 
               {/* Botão de envio */}
               <button
