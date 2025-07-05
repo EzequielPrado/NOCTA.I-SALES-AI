@@ -138,7 +138,7 @@ function App() {
                 className="flex items-center gap-3 hover:opacity-80 transition-opacity"
               >
                 <img 
-                  src="https://imgur.com/fxfSiHc" 
+                  src="https://imgur.com/fxfSiHc.png" 
                   alt="NOCTA.I Logo" 
                   className="h-8 w-auto"
                 />
