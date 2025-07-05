@@ -767,7 +767,7 @@ function App() {
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-12">
               <img 
-                src="https://i.imgur.com/saV9Lwr.png" 
+                src="https://imgur.com/fxfSiHc.png" 
                 alt="NOCTA.I Logo" 
                 className="h-16 w-auto mx-auto mb-8"
               />
@@ -913,7 +913,7 @@ function App() {
             <div className="md:col-span-2">
               <div className="flex items-center gap-3 mb-4">
                 <img 
-                  src="https://i.imgur.com/saV9Lwr.png" 
+                  src="https://imgur.com/fxfSiHc.png" 
                   alt="NOCTA.I Logo" 
                   className="h-10 w-auto"
                 />
