@@ -17,9 +17,6 @@ interface FormData {
   revenue: string;
 }
 
-alert('🔥 handleSubmit foi chamado!');
-console.log('🔥 handleSubmit foi chamado!');
-
 function App() {
   const [formData, setFormData] = useState<FormData>({
     name: '',
@@ -79,7 +76,7 @@ function App() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const WEBHOOK_URL = 'https://webhook.site/028a3519-ec15-462e-b556-fe8f369a0791';
+    const WEBHOOK_URL = 'https://manuela.noctai.com.br/webhook/32577b32-30d4-4f63-b080-288973ec4810';
     const submitButton = e.currentTarget.querySelector('button[type="submit"]') as HTMLButtonElement;
     const originalText = submitButton.innerHTML;
     submitButton.innerHTML = '⏳ Enviando...';
