@@ -973,7 +973,7 @@ function App() {
                   rel="noopener noreferrer"
                   className="block p-3 bg-[#1d1d1d]/50 rounded-lg border border-purple-500/20 backdrop-blur-sm hover:border-purple-500/40 transition-all duration-300 hover:scale-105"
                 >
-                  <div className="text-purple-400 font-bold">🔧 NOCTA.I OPS AI™</div>
+                  <div className="text-purple-400 font-bold">🔧 NOCT.IAOPS AI™</div>
                   <div className="text-sm text-gray-400">IA para Operação e Automação</div>
                 </a>
               </div>
@@ -981,7 +981,7 @@ function App() {
           </div>
 
           <div className="border-t border-[#6831f3]/20 mt-8 pt-8 text-center">
-            <p className="text-gray-400">Copyright © 2025 NOCTA.I SALES AI. Todos os direitos reservados.</p>
+            <p className="text-gray-400">Copyright © 2025 NOCT.IA SALES AI. Todos os direitos reservados.</p>
           </div>
         </div>
       </footer>
