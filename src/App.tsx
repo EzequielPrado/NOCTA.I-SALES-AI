@@ -568,7 +568,7 @@ function App() {
           </div>
         </section>
 
-        {/* Strategic Form Section */}
+{/* Strategic Form Section */}
         
 <section id="formulario" className="py-20 bg-[#04020a] px-4">
   <div className="max-w-4xl mx-auto">
@@ -593,95 +593,80 @@ function App() {
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4 bg-[#1d1d1d] p-6 rounded-xl border border-[#6831f3]/30">
           {/* Nome / WhatsApp */}
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="flex flex-col gap-6">
             <div>
-              <label className="block text-sm font-semibold text-gray-300 mb-2">Qual o seu nome? *</label>
               <input
                 type="text"
                 name="name"
                 value={formData.name}
                 onChange={handleInputChange}
-                className="w-full bg-[#04020a] border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-[#6831f3] focus:ring-2 focus:ring-[#6831f3]/20 transition-all"
+                placeholder="Qual o seu nome? *"
+                className="w-full bg-[#04020a] border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:border-[#6831f3] focus:ring-2 focus:ring-[#6831f3]/20 transition-all"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-semibold text-gray-300 mb-2">Qual o seu WhatsApp? *</label>
               <input
                 type="tel"
                 name="whatsapp"
                 value={formData.whatsapp}
                 onChange={handleInputChange}
-                className="w-full bg-[#04020a] border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-[#6831f3] focus:ring-2 focus:ring-[#6831f3]/20 transition-all"
-                placeholder="(11) 99999-9999"
+                placeholder="Qual o seu WhatsApp? *"
+                className="w-full bg-[#04020a] border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:border-[#6831f3] focus:ring-2 focus:ring-[#6831f3]/20 transition-all"
                 required
               />
             </div>
           </div>
 
           {/* E-mail / Empresa */}
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="flex flex-col gap-6">
             <div>
-              <label className="block text-sm font-semibold text-gray-300 mb-2">Qual o seu melhor e-mail? *</label>
               <input
                 type="email"
                 name="email"
                 value={formData.email}
                 onChange={handleInputChange}
-                className="w-full bg-[#04020a] border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-[#6831f3] focus:ring-2 focus:ring-[#6831f3]/20 transition-all"
+                placeholder="Qual o seu melhor e-mail? *"
+                className="w-full bg-[#04020a] border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:border-[#6831f3] focus:ring-2 focus:ring-[#6831f3]/20 transition-all"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-semibold text-gray-300 mb-2">Qual o nome da sua empresa *</label>
               <input
                 type="text"
                 name="company"
                 value={formData.company}
                 onChange={handleInputChange}
-                className="w-full bg-[#04020a] border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-[#6831f3] focus:ring-2 focus:ring-[#6831f3]/20 transition-all"
+                placeholder="Qual o nome da sua empresa *"
+                className="w-full bg-[#04020a] border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:border-[#6831f3] focus:ring-2 focus:ring-[#6831f3]/20 transition-all"
                 required
               />
             </div>
           </div>
 
-          {/* Segmento / Site */}
-          <div className="grid md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-semibold text-gray-300 mb-2">Qual o segmento? *</label>
-              <input
-                type="text"
-                name="segment"
-                value={formData.segment}
-                onChange={handleInputChange}
-                className="w-full bg-[#04020a] border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-[#6831f3] focus:ring-2 focus:ring-[#6831f3]/20 transition-all"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-gray-300 mb-2">Link do site ou Instagram</label>
-              <input
-                type="text"
-                name="website"
-                value={formData.website}
-                onChange={handleInputChange}
-                className="w-full bg-[#04020a] border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-[#6831f3] focus:ring-2 focus:ring-[#6831f3]/20 transition-all"
-                placeholder="https://..."
-              />
-            </div>
+          {/* Segmento */}
+          <div>
+            <input
+              type="text"
+              name="segment"
+              value={formData.segment}
+              onChange={handleInputChange}
+              placeholder="Qual o segmento? *"
+              className="w-full bg-[#04020a] border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:border-[#6831f3] focus:ring-2 focus:ring-[#6831f3]/20 transition-all"
+              required
+            />
           </div>
         
 
           {/* Faixa de faturamento */}
           <div>
-            <label className="block text-sm font-semibold text-gray-300 mb-2">Faixa de faturamento mensal</label>
             <select
               name="revenue"
               value={formData.revenue}
               onChange={handleInputChange}
               className="w-full bg-[#04020a] border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-[#6831f3] focus:ring-2 focus:ring-[#6831f3]/20 transition-all"
             >
-              <option value="">Selecione uma opção</option>
+              <option value="">Faixa de faturamento mensal</option>
               <option value="0-30k">R$ 0 - R$30.000</option>
               <option value="30-50k">R$30.000 - R$50.000</option>
               <option value="50-100k">R$50.000 - R$100.000</option>
@@ -703,6 +688,9 @@ function App() {
     </div>
   </div>
 </section>
+
+
+
 
 
 {/* Framework Section */}
